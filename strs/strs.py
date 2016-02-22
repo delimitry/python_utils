@@ -4,6 +4,8 @@
 Module with functions for working with strings
 """
 
+import re
+
 
 def xor_strings(a, b):
     """
@@ -15,16 +17,9 @@ def xor_strings(a, b):
     return res
 
 
-def disemvowel(text):
+def disemvowel_text(text):
     """
-    Remove vowels from text
+    Remove vowels from words only if at least one consonant in the word
     """
-    result = ''
-    for w in text.split():
-        translated = w.translate(None, 'aeuio')
-        if len(translated) < 1:
-            result += w
-        else:
-            result += translated
-        result += ' '
-    return result
+    splitted = re.split('(\W+)', text)
+    return ''.join([w.translate(None, 'AEUIOaeuio') or w for w in splitted])
