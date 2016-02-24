@@ -22,6 +22,7 @@ def get_divisors(num):
     """
     Get all the divisors of a number
     """
+    num = abs(num)
     divisors = [n for n in xrange(1, int(num ** 0.5) + 1) if num % n == 0]
     return divisors + [num // n for n in divisors if n * n != num]
 
@@ -30,6 +31,8 @@ def is_prime(num):
     """
     Check that number is prime
     """
+    if num < 2:
+        return False
     for i in xrange(2, int(num ** 0.5) + 1):
         if num % i == 0:
             return False
@@ -47,6 +50,8 @@ def gcd(a, b):
     """
     Get greatest common divisor using Euclid's algorithm
     """
+    if not a and not b:
+        raise Exception('GCD for numbers 0 and 0 is undefined')
     while b:
         a, b = b, a % b
     return a
