@@ -17,9 +17,28 @@ def xor_strings(a, b):
     return res
 
 
-def disemvowel_text(text):
+def disemvowel(text):
     """
     Remove vowels from words only if at least one consonant in the word
     """
     splitted = re.split('(\W+)', text)
     return ''.join([w.translate(None, 'AEUIOaeuio') or w for w in splitted])
+
+
+def leet(text):
+    """
+    Make leet text from text
+    """
+    d = dict(zip('lzeastgoLZEASGTBO', '12345790123456780'))
+    return ''.join(d.get(c, c) for c in text)
+
+
+def rotx(s, x):
+    """
+    Rotate string by x (from -26 to 26)
+    """
+    a = 'abcdefghijklmnopqrstuvwxyz'
+    x = x % 26
+    b = a[x:] + a[:x]
+    d = dict(zip(a + a.upper(), b + b.upper()))
+    return ''.join(d.get(c, c) for c in s)

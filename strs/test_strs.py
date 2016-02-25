@@ -2,7 +2,7 @@
 #-*- coding: utf8 -*-
 
 import unittest
-from strs import disemvowel_text, xor_strings
+from strs import disemvowel, xor_strings, rotx, leet
 
 
 class Test(unittest.TestCase):
@@ -18,15 +18,30 @@ class Test(unittest.TestCase):
         with self.assertRaises(Exception):
             xor_strings('123', '1')
 
-    def test_disemvowel_text(self):
-        self.assertEqual(disemvowel_text(''), '')
-        self.assertEqual(disemvowel_text('AEUIOaeuio'), 'AEUIOaeuio')
-        self.assertEqual(disemvowel_text('lynx'), 'lynx')
-        self.assertEqual(disemvowel_text('some test'), 'sm tst')
-        self.assertEqual(disemvowel_text('You can understand'), 'Y cn ndrstnd')
-        self.assertEqual(disemvowel_text(
+    def test_disemvowel(self):
+        self.assertEqual(disemvowel(''), '')
+        self.assertEqual(disemvowel('AEUIOaeuio'), 'AEUIOaeuio')
+        self.assertEqual(disemvowel('lynx'), 'lynx')
+        self.assertEqual(disemvowel('some test'), 'sm tst')
+        self.assertEqual(disemvowel('You can understand'), 'Y cn ndrstnd')
+        self.assertEqual(disemvowel(
             'Some long (or not) text with punctuation!'),
             'Sm lng (r nt) txt wth pncttn!')
+
+    def test_rotx(self):
+        self.assertEqual(rotx('', 0), '')
+        self.assertEqual(rotx('abc', 1), 'bcd')
+        self.assertEqual(rotx('ABC', 1), 'BCD')
+        self.assertEqual(rotx('abc', 26), 'abc')
+        self.assertEqual(rotx('ABC', 26), 'ABC')
+        self.assertEqual(rotx('A B C', -1), 'Z A B')
+        self.assertEqual(rotx('The popular cipher', 13), 'Gur cbchyne pvcure')
+        self.assertEqual(rotx('Gur cbchyne pvcure', 13), 'The popular cipher')
+
+    def test_leet(self):
+        self.assertEqual(leet(''), '')
+        self.assertEqual(leet('this is a leet test'), '7hi5 i5 4 1337 7357')
+        self.assertEqual(leet('buy my drum'), 'buy my drum')
 
 
 if __name__ == '__main__':
