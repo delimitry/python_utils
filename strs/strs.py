@@ -42,3 +42,10 @@ def rotx(s, x):
     b = a[x:] + a[:x]
     d = dict(zip(a + a.upper(), b + b.upper()))
     return ''.join(d.get(c, c) for c in s)
+
+
+def bits_to_str(bits):
+    """
+    Convert a string of bits to string
+    """
+    return ''.join(chr(int(bits[i:i + 8], 2)) for i in xrange(0, len(bits), 8))
