@@ -2,7 +2,7 @@
 #-*- coding: utf8 -*-
 
 import unittest
-from strs import disemvowel, xor_strings, rotx, leet
+from strs import disemvowel, xor_strings, rotx, leet, bits_to_str
 
 
 class Test(unittest.TestCase):
@@ -42,6 +42,17 @@ class Test(unittest.TestCase):
         self.assertEqual(leet(''), '')
         self.assertEqual(leet('this is a leet test'), '7hi5 i5 4 1337 7357')
         self.assertEqual(leet('buy my drum'), 'buy my drum')
+
+    def test_bits_to_str(self):
+        self.assertEqual(bits_to_str(''), '')
+        self.assertEqual(bits_to_str('0'), '\x00')
+        self.assertEqual(bits_to_str('1'), '\x01')
+        self.assertEqual(bits_to_str('00000000'), '\x00')
+        self.assertEqual(bits_to_str('11111111'), '\xff')
+        self.assertEqual(bits_to_str('001111110'), '?\x00')
+        self.assertEqual(bits_to_str(bin(ord('~'))[2:]), '~')
+        self.assertEqual(bits_to_str(
+            '011000010110001001100011001100010011001000110011'), 'abc123')
 
 
 if __name__ == '__main__':
