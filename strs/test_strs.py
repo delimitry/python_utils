@@ -2,7 +2,7 @@
 #-*- coding: utf8 -*-
 
 import unittest
-from strs import disemvowel, xor_strings, rotx, leet, bits_to_str
+from strs import disemvowel, xor_strings, rotx, leet, bits_to_str, to_phonetic
 
 
 class Test(unittest.TestCase):
@@ -54,6 +54,13 @@ class Test(unittest.TestCase):
         self.assertEqual(bits_to_str(
             '011000010110001001100011001100010011001000110011'), 'abc123')
 
+    def test_to_phonetic(self):
+        self.assertEqual(to_phonetic(''), '')
+        self.assertEqual(to_phonetic('a'), 'Alpha')
+        self.assertEqual(to_phonetic('0'), 'Zero')
+        self.assertEqual(to_phonetic('test'), 'Tango Echo Sierra Tango')
+        self.assertEqual(to_phonetic('ABC'), 'Alpha Bravo Charlie')
+        self.assertEqual(to_phonetic('123'), 'One Two Three')
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
