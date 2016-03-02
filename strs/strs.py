@@ -262,8 +262,3 @@ def num_to_human(num):
 
     sign = '' if num >= 0 else 'Minus '
     return sign + big_to_human(abs(num))
-
-
-# print num_to_human(123456789012345678901234567890)
-# print 'One Hundred Twenty Three Octillion Four Hundred Fifty Six Septillion Seven Hundred Eighty Nine Sextillion Twelve Quintillion Three Hundred Forty Five Quadrillion Six Hundred Seventy Eight Trillion Nine Hundred One Billion Two Hundred Thirty Four Million Five Hundred Sixty Seven Thousand Eight Hundred Ninety'
-
