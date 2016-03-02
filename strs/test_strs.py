@@ -2,7 +2,9 @@
 #-*- coding: utf8 -*-
 
 import unittest
-from strs import disemvowel, xor_strings, rotx, leet, bits_to_str, to_phonetic
+from strs import (
+    disemvowel, xor_strings, rotx, leet, bits_to_str, to_phonetic, num_to_human
+)
 
 
 class Test(unittest.TestCase):
@@ -61,6 +63,26 @@ class Test(unittest.TestCase):
         self.assertEqual(to_phonetic('test'), 'Tango Echo Sierra Tango')
         self.assertEqual(to_phonetic('ABC'), 'Alpha Bravo Charlie')
         self.assertEqual(to_phonetic('123'), 'One Two Three')
+
+    def test_num_to_human(self):
+        self.assertEqual(num_to_human(0), 'Zero')
+        self.assertEqual(num_to_human(-0), 'Zero')
+        self.assertEqual(num_to_human(1), 'One')
+        self.assertEqual(num_to_human(123), 'One Hundred Twenty Three')
+        self.assertEqual(num_to_human(-123), 'Minus One Hundred Twenty Three')
+        self.assertEqual(num_to_human(1000), 'One Thousand')
+        self.assertEqual(num_to_human(1000000), 'One Million')
+        self.assertEqual(num_to_human(3 * 10 ** 63), 'Three Vigintillion')
+        self.assertEqual(
+            num_to_human(123456789012345678901234567890),
+            'One Hundred Twenty Three Octillion Four Hundred Fifty Six '
+            'Septillion Seven Hundred Eighty Nine Sextillion Twelve '
+            'Quintillion Three Hundred Forty Five Quadrillion Six Hundred '
+            'Seventy Eight Trillion Nine Hundred One Billion Two Hundred '
+            'Thirty Four Million Five Hundred Sixty Seven Thousand Eight '
+            'Hundred Ninety'
+        )
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
