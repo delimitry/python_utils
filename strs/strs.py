@@ -21,7 +21,7 @@ def disemvowel(text):
     """
     Remove vowels from words only if at least one consonant in the word
     """
-    splitted = re.split('(\W+)', text)
+    splitted = re.split(r'(\W+)', text)
     return ''.join([w.translate(None, 'AEUIOaeuio') or w for w in splitted])
 
 
@@ -262,3 +262,19 @@ def num_to_human(num):
 
     sign = '' if num >= 0 else 'Minus '
     return sign + big_to_human(abs(num))
+
+
+def capitalize_text(text):
+    """
+    Capitalize text
+    """
+    pattern = re.compile(r'\w+')
+    return pattern.sub(lambda x: x.group().capitalize(), text)
+
+
+def reverse_words(text):
+    """
+    Reverse words in text
+    """
+    pattern = re.compile(r'\w+')
+    return pattern.sub(lambda x: x.group()[::-1], text)

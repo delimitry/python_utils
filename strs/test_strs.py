@@ -3,7 +3,8 @@
 
 import unittest
 from strs import (
-    disemvowel, xor_strings, rotx, leet, bits_to_str, to_phonetic, num_to_human
+    disemvowel, xor_strings, rotx, leet, bits_to_str, to_phonetic, num_to_human,
+    capitalize_text, reverse_words
 )
 
 
@@ -83,6 +84,21 @@ class Test(unittest.TestCase):
             'Hundred Ninety'
         )
 
+    def test_capitalize_text(self):
+        self.assertEqual(capitalize_text(''), '')
+        self.assertEqual(capitalize_text('abc'), 'Abc')
+        self.assertEqual(capitalize_text('some text'), 'Some Text')
+        self.assertEqual(capitalize_text(
+            'Some long (or not) text/message - with punctuation!'),
+            'Some Long (Or Not) Text/Message - With Punctuation!')
+
+    def test_reverse_words(self):
+        self.assertEqual(reverse_words(''), '')
+        self.assertEqual(reverse_words('rotator'), 'rotator')
+        self.assertEqual(reverse_words('some text'), 'emos txet')
+        self.assertEqual(reverse_words(
+            'some text with numbers 123, and/or punctuation'),
+            'emos txet htiw srebmun 321, dna/ro noitautcnup')
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
