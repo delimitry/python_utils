@@ -4,7 +4,7 @@
 import unittest
 from strs import (
     disemvowel, xor_strings, rotx, leet, bits_to_str, to_phonetic, num_to_human,
-    capitalize_text, reverse_words
+    capitalize_text, reverse_words, to_roman, from_roman
 )
 
 
@@ -99,6 +99,51 @@ class Test(unittest.TestCase):
         self.assertEqual(reverse_words(
             'some text with numbers 123, and/or punctuation'),
             'emos txet htiw srebmun 321, dna/ro noitautcnup')
+
+    def test_to_roman(self):
+        with self.assertRaises(Exception):
+            to_roman(0)
+        with self.assertRaises(Exception):
+            to_roman(4000)
+        self.assertEqual(to_roman(1), 'I')
+        self.assertEqual(to_roman(4), 'IV')
+        self.assertEqual(to_roman(5), 'V')
+        self.assertEqual(to_roman(8), 'VIII')
+        self.assertEqual(to_roman(9), 'IX')
+        self.assertEqual(to_roman(14), 'XIV')
+        self.assertEqual(to_roman(19), 'XIX')
+        self.assertEqual(to_roman(44), 'XLIV')
+        self.assertEqual(to_roman(49), 'XLIX')
+        self.assertEqual(to_roman(87), 'LXXXVII')
+        self.assertEqual(to_roman(90), 'XC')
+        self.assertEqual(to_roman(99), 'XCIX')
+        self.assertEqual(to_roman(1838), 'MDCCCXXXVIII')
+        self.assertEqual(to_roman(1954), 'MCMLIV')
+        self.assertEqual(to_roman(1984), 'MCMLXXXIV')
+        self.assertEqual(to_roman(3999), 'MMMCMXCIX')
+
+    def test_from_roman(self):
+        with self.assertRaises(Exception):
+            from_roman('')
+        with self.assertRaises(Exception):
+            from_roman('ABC')
+        self.assertEqual(from_roman('I'), 1)
+        self.assertEqual(from_roman('IV'), 4)
+        self.assertEqual(from_roman('V'), 5)
+        self.assertEqual(from_roman('VIII'), 8)
+        self.assertEqual(from_roman('IX'), 9)
+        self.assertEqual(from_roman('XIV'), 14)
+        self.assertEqual(from_roman('XIX'), 19)
+        self.assertEqual(from_roman('XLIV'), 44)
+        self.assertEqual(from_roman('XLIX'), 49)
+        self.assertEqual(from_roman('LXXXVII'), 87)
+        self.assertEqual(from_roman('XC'), 90)
+        self.assertEqual(from_roman('XCIX'), 99)
+        self.assertEqual(from_roman('MDCCCXXXVIII'), 1838)
+        self.assertEqual(from_roman('MCMLIV'), 1954)
+        self.assertEqual(from_roman('MCMLXXXIV'), 1984)
+        self.assertEqual(from_roman('MMMCMXCIX'), 3999)
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

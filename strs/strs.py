@@ -278,3 +278,68 @@ def reverse_words(text):
     """
     pattern = re.compile(r'\w+')
     return pattern.sub(lambda x: x.group()[::-1], text)
+
+
+def to_roman(num):
+    """
+    Convert number to Roman numerals
+    """
+    if not 0 < num < 4000:
+        raise Exception('Please use numbers from 1 to 3999')
+    nums_to_roman_nums = {
+        1: 'I',
+        4: 'IV',
+        5: 'V',
+        9: 'IX',
+        10: 'X',
+        40: 'XL',
+        50: 'L',
+        90: 'XC',
+        100: 'C',
+        400: 'CD',
+        500: 'D',
+        900: 'CM',
+        1000: 'M',
+    }
+    out = ''
+    for k in sorted(nums_to_roman_nums.keys(), reverse=True):
+        quotient, remainder = divmod(num, k)
+        num = remainder
+        if quotient:
+            out += nums_to_roman_nums.get(k) * quotient
+    return out
+
+
+def from_roman(s):
+    """
+    Convert from Roman numerals to number
+    """
+    if not s or not s.strip() or s.strip('MDCLXVI'):
+        raise Exception('Please provide valid Roman number')
+    roman_nums_to_nums = {
+        'I': 1,
+        'IV': 4,
+        'V': 5,
+        'IX': 9,
+        'X': 10,
+        'XL': 40,
+        'L': 50,
+        'XC': 90,
+        'C': 100,
+        'CD': 400,
+        'D': 500,
+        'CM': 900,
+        'M': 1000,
+    }
+    roman_numerals = [
+        'CM', 'CD', 'XC', 'XL', 'IX', 'IV',
+        'M', 'D', 'C', 'L', 'X', 'V', 'I'
+    ]
+    num = 0
+    while s:
+        for r in roman_numerals:
+            if s.startswith(r):
+                num += roman_nums_to_nums.get(r)
+                s = s[len(r):]
+                break
+    return num
