@@ -343,3 +343,12 @@ def from_roman(s):
                 s = s[len(r):]
                 break
     return num
+
+
+def check_anagrams(a, b):
+    """
+    Check that `a` and `b` are anagrams
+    """
+    if a and b and len(a) != len(b):
+        return False
+    return sorted(a.lower()) == sorted(b.lower())

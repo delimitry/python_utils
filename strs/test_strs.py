@@ -4,7 +4,7 @@
 import unittest
 from strs import (
     disemvowel, xor_strings, rotx, leet, bits_to_str, to_phonetic, num_to_human,
-    capitalize_text, reverse_words, to_roman, from_roman
+    capitalize_text, reverse_words, to_roman, from_roman, check_anagrams
 )
 
 
@@ -143,6 +143,13 @@ class Test(unittest.TestCase):
         self.assertEqual(from_roman('MCMLIV'), 1954)
         self.assertEqual(from_roman('MCMLXXXIV'), 1984)
         self.assertEqual(from_roman('MMMCMXCIX'), 3999)
+
+    def test_check_anagrams(self):
+        self.assertEqual(check_anagrams('', ''), True)
+        self.assertEqual(check_anagrams('a', 'a'), True)
+        self.assertEqual(check_anagrams('a', 'b'), False)
+        self.assertEqual(check_anagrams('123', '321'), True)
+        self.assertEqual(check_anagrams('The eyes', 'They see'), True)
 
 
 if __name__ == '__main__':
