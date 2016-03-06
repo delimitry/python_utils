@@ -2,7 +2,7 @@
 #-*- coding: utf8 -*-
 
 import unittest
-from nums import *
+from nums import get_divisors, is_prime, get_primes_less_than, gcd, is_lucky
 
 
 class Test(unittest.TestCase):
@@ -47,6 +47,23 @@ class Test(unittest.TestCase):
         with self.assertRaises(Exception):
             # undefined for 0 and 0
             gcd(0, 0)
+
+    def test_is_lucky(self):
+        self.assertEqual(is_lucky(-1), False)
+        self.assertEqual(is_lucky(0), True)
+        self.assertEqual(is_lucky(44008, digits=6), True)
+        self.assertEqual(is_lucky(2), False)
+        self.assertEqual(is_lucky(22), False)
+        self.assertEqual(is_lucky(123222), True)
+        self.assertEqual(is_lucky(900126), True)
+        self.assertEqual(is_lucky(8000008), False)
+        self.assertEqual(is_lucky(80000008), True)
+        self.assertEqual(is_lucky(001001), False)  # 001001 == 513
+        self.assertEqual(is_lucky(1001), True)
+        self.assertEqual(is_lucky(1203, digits=4), True)
+        self.assertEqual(is_lucky(90126, 6), True)
+        with self.assertRaises(Exception):
+            is_lucky(0, digits=1)
 
 
 if __name__ == '__main__':

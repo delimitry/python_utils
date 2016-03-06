@@ -55,3 +55,20 @@ def gcd(a, b):
     while b:
         a, b = b, a % b
     return a
+
+
+def is_lucky(num, digits=6):
+    """
+    Check that number is lucky
+    Lucky numbers are the positive integers with a sum of digits in left 
+    half is equal to the sum in the right. If length of the number is less 
+    than `digits` (by default 6), the number is padded with zeros.
+    """
+    if digits % 2:
+        raise Exception('Please provide the even `digits` value')
+    str_num = str(num).zfill(digits)
+    if len(str_num) % 2 or num < 0:
+        return False
+    left = sum([int(d) for d in str_num[:len(str_num) / 2]])
+    right = sum([int(d) for d in str_num[len(str_num) / 2:]])
+    return left == right
