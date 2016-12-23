@@ -5,6 +5,7 @@ Module with functions for working with strings
 """
 
 import re
+import struct
 
 
 def xor_strings(a, b):
@@ -352,6 +353,65 @@ def check_anagrams(a, b):
     if a and b and len(a) != len(b):
         return False
     return sorted(a.lower()) == sorted(b.lower())
+
+
+def to_base85(s, adobe=False):
+    """
+    Encode data to Base85 (ASCII85)
+    Adobe version is supported
+    """
+    # padding input string with zero bytes
+    pad_size = (4 - len(s)) % 4
+    s += pad_size * '\x00'
+    # get groups by 4 bytes and save as 32-bit numbers
+    numbers = [struct.unpack('>I', s[i:i + 4])[0] for i in xrange(0, len(s), 4)]
+    encoded = []
+    for num in numbers:
+        # convert num into 5 radix-85 digits
+        enc_part = []
+        for _ in xrange(5):
+            num, remainder = divmod(num, 85)
+            enc_part.insert(0, remainder)
+        if adobe and not any(enc_part):
+            encoded += [ord('z') - 33]
+        else:
+            encoded += enc_part
+    encoded = encoded[:-pad_size] if pad_size else encoded
+    result = ''.join(chr(x + 33) for x in encoded)
+    if adobe:
+        result = '<~' + result + '~>'
+    return result
+
+
+def from_base85(s, adobe=False):
+    """
+    Decode data from Base85 (ASCII85)
+    Adobe version is supported
+    """
+    # cut Adobe delimiters
+    if adobe and s.startswith('<~') and s.endswith('~>'):
+        s = s[2:-2]
+    s = filter(lambda c: 33 <= ord(c) <= 117 or (c == 'z' and adobe), s)
+    if adobe:
+        s = s.replace('z', '!!!!!')
+    # padding input string with 'u' bytes
+    pad_size = (5 - len(s)) % 5
+    s += pad_size * 'u'
+    # get groups by 5 bytes
+    values = [[ord(x) - 33 for x in s[i:i + 5]] for i in xrange(0, len(s), 5)]
+    decoded = []
+    for value in values:
+        num = 0
+        for i, v in enumerate(value):
+            num += (85 ** (4 - i)) * v
+        # convert to 32-bit number to 4 decimal bytes
+        dec_part = []
+        for _ in xrange(4):
+            num, remainder = divmod(num, 256)
+            dec_part.insert(0, remainder)
+        decoded += dec_part
+    decoded = decoded[:-pad_size] if pad_size else decoded
+    return ''.join(chr(x) for x in decoded)
 
 
 def ipv6_to_full(s):

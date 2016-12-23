@@ -5,7 +5,8 @@ import unittest
 from strs import (
     disemvowel, xor_strings, rotx, leet, bits_to_str, to_phonetic, num_to_human,
     capitalize_text, reverse_words, to_roman, from_roman, check_anagrams,
-    ipv6_to_full, ipv6_rfc1924_encode, ipv6_rfc1924_decode,
+    to_base85, from_base85, ipv6_to_full, ipv6_rfc1924_encode, 
+    ipv6_rfc1924_decode,
 )
 
 
@@ -181,6 +182,25 @@ class Test(unittest.TestCase):
             '4)+k&C#VzJ4br>0wv%Yp'), '1080:0:0:0:8:800:200c:417a')
         val = 'ffff:2:3:4:5:6:7:ffff'
         self.assertEqual(ipv6_rfc1924_decode(ipv6_rfc1924_encode(val)), val)
+
+    def test_to_base85(self):
+        self.assertEqual(
+            to_base85('Hello world', adobe=True), '<~87cURD]j7BEbo7~>')
+        self.assertEqual(
+            to_base85('abcd\x00\x00\x00\x00123', adobe=True), '<~@:E_Wz0etN~>')
+        self.assertEqual(
+            to_base85('\xff\xff\xff\xff'), 's8W-!')
+
+    def test_from_base85(self):
+        self.assertEqual(from_base85(to_base85('Abc 123!@#$')), 'Abc 123!@#$')
+        self.assertEqual(from_base85(to_base85('AB')), 'AB')
+        self.assertEqual(from_base85(to_base85('AB\xff')), 'AB\xff')
+        self.assertEqual(
+            from_base85('<~87cURD]j7BEbo7~>', adobe=True), 'Hello world')
+        self.assertEqual(
+            from_base85('<~z~>', adobe=True), '\x00\x00\x00\x00')
+        self.assertEqual(
+            from_base85('!!!!!'), '\x00\x00\x00\x00')
 
 
 if __name__ == '__main__':
