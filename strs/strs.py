@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*- coding: utf8 -*-
+#-*- coding: utf-8 -*-
 """
 Module with functions for working with strings
 """
@@ -352,3 +352,51 @@ def check_anagrams(a, b):
     if a and b and len(a) != len(b):
         return False
     return sorted(a.lower()) == sorted(b.lower())
+
+
+def ipv6_to_full(s):
+    """Expand IPv6 from shortened to full"""
+    if '::' in s:
+        parts = [x or '0' for x in s.split('::')]
+        if len(parts) != 2: 
+            raise Exception('Invalid IPv6 format!')
+        filler = ':' + ':'.join(['0' for _ in range(8 - s.count(':'))]) + ':'
+        s = filler.join(parts)
+    return ':'.join('%04x' % int(x, 16) for x in s.split(':'))
+
+
+RFC1924_ALPHABET = (
+    '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+    '!#$%&()*+-;<=>?@^_`{|}~'
+)
+
+
+def ipv6_rfc1924_encode(s):
+    """Encode IPv6 address to RFC1924"""
+    s = filter(lambda c: c in ':0123456789ABCDEFabcdef', s)
+    num = int(''.join([x.zfill(4) for x in s.split(':')]), 16)
+    enc = []
+    if not num:
+        enc = [0, 0, 0, 0, 0, 0, 0, 0]
+    while num:
+        num, remainder = divmod(num, 85)
+        enc.insert(0, remainder)
+    return ''.join(RFC1924_ALPHABET[i] for i in enc)
+
+
+def ipv6_rfc1924_decode(s):
+    """Decode RFC1924 IPv6 address to standard hex representation"""
+    # filter unexpected characters
+    s = filter(lambda c: c in RFC1924_ALPHABET, s)
+    indices = [RFC1924_ALPHABET.index(c) for c in s]
+    num = 0
+    for i, v in enumerate(indices):
+        num += (85 ** (len(indices) - 1 - i)) * v
+    # convert to hex
+    hex_values = []
+    if not num:
+        hex_values = [0, 0, 0, 0, 0, 0, 0, 0]
+    while num:
+        num, remainder = divmod(num, 0x10000)
+        hex_values.insert(0, remainder)
+    return ':'.join('%x' % v for v in hex_values)

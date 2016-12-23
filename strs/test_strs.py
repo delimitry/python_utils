@@ -1,10 +1,11 @@
 #!/usr/bin/env python
-#-*- coding: utf8 -*-
+#-*- coding: utf-8 -*-
 
 import unittest
 from strs import (
     disemvowel, xor_strings, rotx, leet, bits_to_str, to_phonetic, num_to_human,
-    capitalize_text, reverse_words, to_roman, from_roman, check_anagrams
+    capitalize_text, reverse_words, to_roman, from_roman, check_anagrams,
+    ipv6_to_full, ipv6_rfc1924_encode, ipv6_rfc1924_decode,
 )
 
 
@@ -150,6 +151,36 @@ class Test(unittest.TestCase):
         self.assertEqual(check_anagrams('a', 'b'), False)
         self.assertEqual(check_anagrams('123', '321'), True)
         self.assertEqual(check_anagrams('The eyes', 'They see'), True)
+
+    def test_ipv6_to_full(self):
+        val = 'ff01:0da8:0000:0000:0001:0000:0000:0001'
+        ipv6_values = [
+            'ff01:0da8:0:0:1:0:0:1', 
+            'ff01:0da8::1:0:0:1', 
+            'ff01:da8:0000:0:1::1', 
+            'ff01:da8:0:0:1:0:0:1', 
+            'ff01:da8:0:0:1::1', 
+            'ff01:DA8:0:0:1::1', 
+            'ff01:da8::0:1:0:0:1', 
+            'ff01:da8::1:0:0:1', 
+        ]
+        self.assertTrue(all(ipv6_to_full(x) == val for x in ipv6_values))
+        self.assertEqual(ipv6_to_full('ffff::ffff'), 
+            'ffff:0000:0000:0000:0000:0000:0000:ffff')
+        self.assertEqual(ipv6_to_full('::'), ipv6_to_full('0:0:0:0:0:0:0:0'))
+        self.assertEqual(ipv6_to_full('::1'), ipv6_to_full('0:0:0:0:0:0:0:1'))
+
+    def test_ipv6_rfc1924_encode(self):
+        self.assertEqual(ipv6_rfc1924_encode(
+            '1080:0:0:0:8:800:200c:417a'), '4)+k&C#VzJ4br>0wv%Yp')
+        self.assertEqual(ipv6_rfc1924_encode(
+            '1:2:3:4:5:6:7:8'), '8JQWOV7SkcR4tS1R_a')
+
+    def test_ipv6_rfc1924_decode(self):
+        self.assertEqual(ipv6_rfc1924_decode(
+            '4)+k&C#VzJ4br>0wv%Yp'), '1080:0:0:0:8:800:200c:417a')
+        val = 'ffff:2:3:4:5:6:7:ffff'
+        self.assertEqual(ipv6_rfc1924_decode(ipv6_rfc1924_encode(val)), val)
 
 
 if __name__ == '__main__':
