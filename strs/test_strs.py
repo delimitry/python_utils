@@ -6,7 +6,7 @@ from strs import (
     disemvowel, xor_strings, rotx, leet, bits_to_str, to_phonetic, num_to_human,
     capitalize_text, reverse_words, to_roman, from_roman, check_anagrams,
     to_base85, from_base85, ipv6_to_full, ipv6_rfc1924_encode, 
-    ipv6_rfc1924_decode,
+    ipv6_rfc1924_decode, to_tonal, from_tonal,
 )
 
 
@@ -201,6 +201,30 @@ class Test(unittest.TestCase):
             from_base85('<~z~>', adobe=True), '\x00\x00\x00\x00')
         self.assertEqual(
             from_base85('!!!!!'), '\x00\x00\x00\x00')
+
+    def test_to_tonal(self):
+        self.assertEqual(to_tonal(0x16), 'tonby')
+        self.assertEqual(to_tonal(0x12a), 'sandetonko')
+        self.assertEqual(to_tonal(0x700), 'rasan')
+        self.assertEqual(to_tonal(0x1000), 'mill')
+        self.assertEqual(to_tonal(0x10000), 'bong')
+        self.assertEqual(to_tonal(0x100000000), 'tam')
+        self.assertEqual(to_tonal(0x1000000000000), 'song')
+        self.assertEqual(to_tonal(0x15100000), 'millsusantonbong')
+        self.assertEqual(to_tonal(0x28d5b7e0f), 'detammemilllasansutonhubongramillposanfy')
+        self.assertEqual(to_tonal(0x100000000000000000000), 'bongtran')
+
+    def test_from_tonal(self):
+        self.assertEqual(from_tonal('tonby'), 0x16)
+        self.assertEqual(from_tonal('sandetonko'), 0x12a)
+        self.assertEqual(from_tonal('rasan'), 0x700)
+        self.assertEqual(from_tonal('mill'), 0x1000)
+        self.assertEqual(from_tonal('bong'), 0x10000)
+        self.assertEqual(from_tonal('tam'), 0x100000000)
+        self.assertEqual(from_tonal('song'), 0x1000000000000)
+        self.assertEqual(from_tonal('millsusantonbong'), 0x15100000)
+        self.assertEqual(from_tonal('detammemilllasansutonhubongramillposanfy'), 0x28d5b7e0f)
+        self.assertEqual(from_tonal('bongtran'), 0x100000000000000000000)
 
 
 if __name__ == '__main__':

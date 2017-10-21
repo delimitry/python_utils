@@ -460,3 +460,168 @@ def ipv6_rfc1924_decode(s):
         num, remainder = divmod(num, 0x10000)
         hex_values.insert(0, remainder)
     return ':'.join('%x' % v for v in hex_values)
+
+
+def to_tonal(num):
+    """Convert a number to tonal system"""
+    nums_to_tonals = {
+        0x0: 'noll',
+        0x1: 'an',
+        0x2: 'de',
+        0x3: 'ti',
+        0x4: 'go',
+        0x5: 'su',
+        0x6: 'by',
+        0x7: 'ra',
+        0x8: 'me',
+        0x9: 'ni',
+        0xa: 'ko',
+        0xb: 'hu',
+        0xc: 'vy',
+        0xd: 'la',
+        0xe: 'po',
+        0xf: 'fy',
+        0x10: 'ton',
+        0x100: 'san',  # 16 ** 2
+        0x1000: 'mill',  # 16 ** 3
+        0x10000: 'bong',  # 16 ** 4
+        0x100000000: 'tam',  # 16 ** 8
+        0x1000000000000: 'song',  # 16 ** 12
+        0x10000000000000000: 'tran',  # 16 ** 16
+    }
+
+    # get only big numbers (16 ** 4, 16 ** 8, etc)
+    big_nums = sorted([x for x in nums_to_tonals.keys() if x >= 0x10000])
+
+    def find_max_tonal_big(num):
+        """Find max tonal big"""
+        for n in big_nums[::-1]:
+            if num < n:
+                continue
+            return n
+        return None
+
+    def small_to_tonal(num):
+        """Convert a number to tonal, for number in [0x0..0x10000]"""
+        assert num < 0x10000
+        out = []
+        if not num:
+            return [nums_to_tonals[0]]
+        for i in xrange(3, 0, -1):
+            quotient, remainder = divmod(num, 0x10 ** i)
+            num = remainder
+            if quotient:
+                # if number of tonals > 1 (e.g. for 0x200 add "de" before "san")
+                if quotient > 1:
+                    out.append(nums_to_tonals[quotient])
+                out.append(nums_to_tonals[0x10 ** i])
+        # add tonal value for the last digit
+        if num:
+            out.append(nums_to_tonals[num])
+        return out
+
+    def big_to_tonal(num):
+        """Convert any number to tonal"""
+        out = []
+        # if number is single digit
+        if num <= 0x10:
+            out.append(''.join(small_to_tonal(num)))
+            return out
+        while num:
+            big_num = find_max_tonal_big(num)
+            if big_num:
+                quotient, remainder = divmod(num, big_num)
+                num = remainder
+                if quotient:
+                    # if number of big tonals > 1 (e.g. for 0x2000 add "de" before "mill")
+                    if quotient > 1:
+                        out.append(''.join(big_to_tonal(quotient)))
+                    out.append(''.join(nums_to_tonals[big_num]))
+            else:
+                out.append(''.join(small_to_tonal(num)))
+                break
+        return out
+
+    out = big_to_tonal(num)
+    return ''.join(out)
+
+
+def from_tonal(s):
+    """Convert tonal value to number"""
+    tonals_to_nums = {
+        'noll': 0x0,
+        'an': 0x1,
+        'de': 0x2,
+        'ti': 0x3,
+        'go': 0x4,
+        'su': 0x5,
+        'by': 0x6,
+        'ra': 0x7,
+        'me': 0x8,
+        'ni': 0x9,
+        'ko': 0xa,
+        'hu': 0xb,
+        'vy': 0xc,
+        'la': 0xd,
+        'po': 0xe,
+        'fy': 0xf,
+        'ton': 0x10,
+        'san': 0x100,  # 16 ** 2
+        'mill': 0x1000,  # 16 ** 3
+        'bong': 0x10000,  # 16 ** 4
+        'tam': 0x100000000,  # 16 ** 8
+        'song': 0x1000000000000,  # 16 ** 12
+        'tran': 0x10000000000000000,  # 16 ** 16
+    }
+
+    mul_nums = sorted([x for x in tonals_to_nums.values() if 0x10000 > x >= 0x10])
+    big_nums = sorted([x for x in tonals_to_nums.values() if x >= 0x10000])
+
+    s = s.lower()
+    if s in tonals_to_nums:
+        return tonals_to_nums[s]
+
+    out = []
+    while s:
+        for tonal in tonals_to_nums:
+            if s.startswith(tonal):
+                out.append(tonals_to_nums[tonal])
+                s = s[len(tonal):]
+                break
+        else:
+            raise Exception('Invalid tonals value!')
+
+    result = 0
+    cur_res = 0
+    prev = 0
+    for v in out:
+        if v in big_nums:  # 0x10000, 0x100000000, etc.
+            # if big num firstly occured set prev to it
+            if not prev:
+                prev = v
+                # and update cur_res with current big num
+                cur_res += prev
+                continue
+            # add prev num before update result
+            if prev < 0x10:
+                cur_res += prev
+            # add (prev_num * big_num) to result
+            result += cur_res * v
+            # reset current res
+            cur_res = 0
+        elif v in mul_nums:  # 0x10, 0x100, 0x1000
+            # if multiply num firstly occured set prev to it
+            if not prev:
+                prev = v
+                # and update cur_res with current big num
+                cur_res += prev
+                continue
+            # multiply by the previous digit or just add
+            cur_res += prev * v if prev < 0x10 else v
+        prev = v
+
+    # add last value
+    if prev < 0x10:
+        cur_res += prev
+    result += cur_res
+    return result
