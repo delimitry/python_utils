@@ -465,10 +465,10 @@ def ipv6_rfc1924_decode(s):
 def to_tonal(num):
     """Convert a number to tonal system"""
     nums_to_tonals = {
-        0x0: 'noll', 
-        0x1: 'an',  
-        0x2: 'de',  
-        0x3: 'ti',  
+        0x0: 'noll',
+        0x1: 'an',
+        0x2: 'de',
+        0x3: 'ti',
         0x4: 'go',
         0x5: 'su',
         0x6: 'by',
@@ -512,7 +512,7 @@ def to_tonal(num):
             num = remainder
             if quotient:
                 # if number of tonals > 1 (e.g. for 0x200 add "de" before "san")
-                if quotient > 1: 
+                if quotient > 1:
                     out.append(nums_to_tonals[quotient])
                 out.append(nums_to_tonals[0x10 ** i])
         # add tonal value for the last digit
@@ -549,10 +549,10 @@ def to_tonal(num):
 def from_tonal(s):
     """Convert tonal value to number"""
     tonals_to_nums = {
-        'noll': 0x0, 
-        'an': 0x1,  
-        'de': 0x2,  
-        'ti': 0x3,  
+        'noll': 0x0,
+        'an': 0x1,
+        'de': 0x2,
+        'ti': 0x3,
         'go': 0x4,
         'su': 0x5,
         'by': 0x6,
